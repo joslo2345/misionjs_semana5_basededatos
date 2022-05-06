@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
   res.json({message: 'alive'});
 });
 
+// CRUD Explorers
 app.get('/explorers', async (req, res) => {
   const allExplorers =  await prisma.explorer.findMany({});
   res.json(allExplorers);
@@ -54,6 +55,51 @@ app.delete('/explorers/:id', async (req, res) => {
 	return res.json({message: "Eliminado correctamente"});
 });
 
+
+// CRUD MissionCommander
+app.get('/missioncommanders', async (req, res) => {
+  const allMissionCommanders =  await prisma.MissionCommander.findMany({});
+  res.json(allMissionCommanders);
+});
+
+app.get('/missioncommanders/:id', async (req, res) => {
+  const id = req.params.id;
+  const missioncommander = await prisma.MissionCommander.findUnique({where: {id: parseInt(id)}});
+  res.json(missioncommander);
+});
+
+app.post('/missioncommanders', async (req, res) => {
+  const missioncommander = {
+    name: req.body.name,
+    lang: req.body.lang,
+    missionCommander: req.body.missionCommander,
+    enrollments: req.body.enrollments
+   };
+  const message = 'MissionCommander creado.';
+  await prisma.MissionCommander.create({data: missioncommander});
+  return res.json({message});
+});
+
+app.put('/missioncommanders/:id', async (req, res) => {
+	const id = parseInt(req.params.id);
+
+	await prisma.MissionCommander.update({
+		where: {
+			id: id
+		},
+		data: {
+			missionCommander: req.body.missionCommander
+		}
+	})
+
+	return res.json({message: "Actualizado correctamente"});
+});
+
+app.delete('/missioncommanders/:id', async (req, res) => {
+	const id = parseInt(req.params.id);
+	await prisma.MissionCommander.delete({where: {id: id}});
+	return res.json({message: "Eliminado correctamente"});
+});
 
 app.listen(port, () => {
   console.log(`Listening to requests on port ${port}`);
